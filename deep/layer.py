@@ -22,15 +22,8 @@ class GraphConvolutionSparse():
         with tf.name_scope(self.name):
             x = inputs
             x = dropout_sparse(x, 1 - self.dropout, self.features_nonzero)
-            x = tf.sparse_tensor_dense_matmul(x, self.vars['weights'])
-            # sparse_tensor_dense_matmul(
-            #     sp_a,
-            #     b,
-            #     adjoint_a=False,
-            #     adjoint_b=False,
-            #     name=None
-            # ) 用稠密矩阵“B”乘以 SparseTensor(秩为 2)“A”
-            x = tf.sparse_tensor_dense_matmul(self.adj, x)
+            x = tf.sparse_tensor_dense_matmul(x, self.vars['weights'])  #xw
+            x = tf.sparse_tensor_dense_matmul(self.adj, x) #Z=D-/2AD1/2XW
             outputs = self.act(x) #激活函数
         return outputs
 
@@ -77,20 +70,14 @@ class InnerProductDecoder():
             outputs = self.act(x)
         return outputs
 
-def weight_variable_glorot(input_dim, output_dim, name=""):  #正态初始化
+#正态初始化W
+def weight_variable_glorot(input_dim, output_dim, name=""):
     init_range = np.sqrt(6.0 / (input_dim + output_dim))
     initial = tf.random_uniform(
         [input_dim, output_dim], minval=-init_range,
         maxval=init_range, dtype=tf.float32)
-    # random_uniform(
-    #     shape,
-    #     minval=0,
-    #     maxval=None,
-    #     dtype=tf.float32,
-    #     seed=None,
-    #     name=None
-    # )
     return tf.Variable(initial, name=name)
+
 
 def dropout_sparse(x, keep_prob, num_nonzero_elems):
     noise_shape = [num_nonzero_elems]

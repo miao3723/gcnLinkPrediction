@@ -177,8 +177,7 @@ def cross_validation_experiment(miRNA_dis_matrix,seed):
         train_miRNA_dis_matrix[positive_test_row, positive_test_col] = 0
         train_miRNA_dis_matrix[positive_test_col, positive_test_row] = 0
 
-        # name = 'miRNA_disease.csv'
-        # np.savetxt(name, train_miRNA_dis_matrix, delimiter=',')
+        #通过gcn得到新的打分矩阵
         miRNA_disease_score = du.get_new_scoring_matrices(train_miRNA_dis_matrix)
 
         test_label_vector = []
@@ -207,15 +206,13 @@ def load_data(file):
 
 if __name__=="__main__":
     datetime1 = datetime.now()
-
-    # adj = load_data()
-    # np.savetxt('yeast.csv', adj.todense(), delimiter=',')
     # yeast_matrix = np.loadtxt('yeast.csv', delimiter=',', dtype=float)
     microRNA_matrix= load_data("microRNA-disease.txt").todense()
     result = np.zeros((1, 7), float)
     average_result = np.zeros((1, 7), float)
     circle_time = 10
 
+    #随机种子，1-10
     for i in range(circle_time):
         result += cross_validation_experiment(microRNA_matrix,i)
 

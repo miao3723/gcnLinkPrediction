@@ -2,6 +2,12 @@ import tensorflow as tf
 from deep.layer import GraphConvolutionSparse,GraphConvolution
 flags = tf.app.flags
 FLAGS = flags.FLAGS
+
+'''
+一层隐藏层
+一层embedding层
+最后內积解码
+'''
 class GCNModel():
     def __init__(self, placeholders, num_features, features_nonzero, name):
         self.name = name
@@ -50,7 +56,5 @@ class InnerProductDecoder():
             x = tf.transpose(inputs)
             x = tf.matmul(inputs, x)
             x = tf.reshape(x, [-1])
-            # pass '[-1]' to flatten 't'
-            # reshape(t, [-1]) == > [1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6]
             outputs = self.act(x)
         return outputs
