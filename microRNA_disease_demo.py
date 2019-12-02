@@ -83,8 +83,6 @@ def get_AUC(real_score, predict_score):
     new_y[0] = 0
     new_x.append(1)
     new_y.append(1)
-    # print(list(np.array(new_x).flatten()))
-    # print(list(np.array(new_y).flatten()))
     area = 0
     for i in range(thresholds.shape[1]):
         area = area + (new_y[i] + new_y[i + 1]) * (new_x[i + 1] - new_x[i]) / 2
@@ -191,9 +189,7 @@ def cross_validation_experiment(miRNA_dis_matrix,seed):
         metric += model_evaluate(test_label_vector, predict_y_proba)
 
     print(metric / k_folds)
-
     metric = np.array(metric / k_folds)
-
     name = 'result_seed=' + str(seed) + '.csv'
     np.savetxt(name, metric, delimiter=',')
 
